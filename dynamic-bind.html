@@ -144,7 +144,8 @@
 
       _createValueChangeListener: function(propertyName, propertyToBindTo) {
         this.addEventListener(propertyName + '-changed', (function(evt) {
-          this.set('props.' + propertyToBindTo, evt.detail.value || evt.detail);
+          if(evt.detail.value === undefined) return;
+          this.set('props.' + propertyToBindTo, evt.detail.value);
         }).bind(this));
       },
 
