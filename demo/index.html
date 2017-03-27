@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>dynamic-bind demo</title>
+
+    <script>
+      window.Polymer = {
+        lazyRegister: true,
+        dom: 'shadow'
+      };
+    </script>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../dynamic-bind.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+      element-two {
+        margin: 10px 0;
+      }
+      dynamic-bind {
+        --dynamic-bind-container: {
+        }
+        --dynamic-bind-item: {
+          margin: 10px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+  <demo-snippet>
+    <template is="dom-bind" id="demo">
+
+      <h1>[[props.fullName]]</h1>
+
+      <label>first name</label>
+      <input type="text" value="{{props.firstName::input}}">
+      </label>
+      <br>
+      <label>last name</label>
+      <input type="text" value="{{props.lastName::input}}">
+      </label>
+      <br>
+
+      <button on-tap="addHTML">Add Element</button>
+
+      <dynamic-bind id="dynamicBind" props="{{props}}"></dynamic-bind>
+    </template>
+
+    <script>
+      demo.props = {
+        firstName: 'John',
+        lastName: 'Doe',
+        fullName: null
+      }
+      demo.addHTML = function() {
+        dynamicBind.importHref(this.resolveUrl('element-two.html'));
+        dynamicBind.insertHTML('<element-two full-name="{{fullName}}" first-name="[[firstName]]" last-name="{{lastName}}"></element-two>');
+        dynamicBind.updateStyles();
+      }
+    </script>
+  </demo-snippet>
+
+  </body>
+</html>

@@ -1,0 +1,80 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<!--
+`element-two`
+
+
+@demo demo/index.html 
+-->
+
+<dom-module id="element-two">
+  <template>
+    <style>
+      :host {
+        display: block;
+        background-color: #ddd;
+        padding: 10px 20px 20px 20px;
+      }
+    </style>
+
+    <h6>dynamically added element</h6>
+    <h1>[[fullName]]</h1>
+
+    <label>first name</label>
+    <input type="text" value="{{firstName::input}}">
+    </label>
+    <br>
+    <label>last name</label>
+    <input type="text" value="{{lastName::input}}">
+    </label>
+    <br>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'element-two',
+
+      properties: {
+
+        firstName: {
+          type: String,
+          notify: true,
+          observer: '_firstNameChanged'
+        },
+
+        lastName: {
+          type: String,
+          notify: true,
+          observer: '_lastNameChanged'
+        },
+
+        fullName: {
+          type: String,
+          notify: true,
+          computed: '_computeFullName(firstName, lastName)',
+          observer: '_fullNameChanged'
+        }
+        
+      },
+
+      _computeFullName: function(firstName, lastName) {
+        return firstName + ' ' + lastName;
+      },
+
+      _firstNameChanged: function(firstName) {
+        this.fire('first-name-changed', firstName); //shady-dom fix
+      },
+
+      _lastNameChanged: function(lastName) {
+        this.fire('last-name-changed', lastName); //shady-dom fix
+      },
+
+      _fullNameChanged: function(fullName) {
+        this.fire('full-name-changed', fullName); //shady-dom fix
+      }
+
+    });
+  </script>
+</dom-module>
