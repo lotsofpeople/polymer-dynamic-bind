@@ -54,7 +54,7 @@
         var elements = Array.from(this.$.container.children);
         for(var i in elements) {
           var propName = this._dash(propName);
-          var boundProp = this._camelCase(elements[i].getAttribute('data-bind-' + propName));
+          var boundProp = this._camelCase(elements[i]['data-bind-' + propName]);
           elements[i][boundProp] = value;
         }
       },
@@ -69,77 +69,37 @@
         var tempContainer = document.createElement('div');
         tempContainer.innerHTML = html;
         var el = tempContainer.childNodes[0];
-        var nodeName = el.nodeName.toLowerCase();
-        var elementToInsert = document.createElement(nodeName);
-
-        var elementAttributes = this._parseElementAttributesToArray(nodeName, html);
+        var elementAttributes = Array.from(el.attributes);
 
         var bindings = [];
-        // var events = [];
+        var oneWayBindingPattern = new RegExp(/^\[\[.*?\]\]$/g);
+        var twoWayBindingPattern = new RegExp(/^\{\{.*?\}\}$/g);
+        var newElement = document.createElement(el.nodeName);
 
         for(var i in elementAttributes) {
-          
-          // if(i.substr(0, 3) === 'on-') {
-          //   events.push({
-          //     name: i.substr(3),
-          //     handler: elementAttributes[i]
-          //   })
-          // }
+          var attributeName = elementAttributes[i].nodeName;
+          var attributeValue = elementAttributes[i].value;
+          var isOneWayBinding = attributeValue.match(oneWayBindingPattern);
+          var isTwoWayBinding = attributeValue.match(twoWayBindingPattern);
 
-          if(elementAttributes[i].match(/^\[\[(.*?)\]\]$/)) {
-            bindings.push({
-              propertyName: i,
-              binding: elementAttributes[i].substring(2, elementAttributes[i].length-2),
-              twoWay: false
-            })
+          if(isOneWayBinding || isTwoWayBinding) {
+            
+            var propertyToBindTo = attributeValue.substring(2, attributeValue.length-2);
+            newElement['data-bind-' + this._dash(propertyToBindTo)] = attributeName;
+            newElement[this._camelCase(attributeName)] = this.props[propertyToBindTo];
+            
+            if(isTwoWayBinding) {
+              this._createValueChangeListener(attributeName, propertyToBindTo);
+            }
           }
 
-          if(elementAttributes[i].match(/^\{\{.*?\}\}$/)) {
-            bindings.push({
-              propertyName: i,
-              binding: elementAttributes[i].substring(2, elementAttributes[i].length-2),
-              twoWay: true
-            })
-          }
-        }
-
-        for(var i in bindings) {
-          
-          var propertyName = bindings[i].propertyName;
-          var propertyToBindTo = bindings[i].binding;
-          
-          elementToInsert.setAttribute('data-bind-' + this._dash(propertyToBindTo) , propertyName);
-          elementToInsert.setAttribute(propertyName, this.props[propertyToBindTo]);
-          
-          if(bindings[i].twoWay) {
-            this._createValueChangeListener(propertyName, propertyToBindTo);            
+          else {
+            newElement[this._camelCase(attributeName)] = attributeValue;
           }
 
         }
 
-        return elementToInsert;
-      },
-
-      _parseElementAttributesToArray: function(nodeName, html) {
-        var elementProps = html
-          .replace('<' + nodeName + ' ', '')
-          .replace('></' + nodeName + '>', '')
-
-        var regexBindings = elementProps.split(/(\s|>)(.*?\=.*?\")(\s|>)/g)
-
-        var chunks = regexBindings.filter(function(item) {
-          return (item !== " ");
-        });
-
-        var arr = [];
-        for(var i in chunks) {
-          var keyValuePair = chunks[i].split('=');
-          var key = keyValuePair[0];
-          var value = keyValuePair[1].replace(/^"(.*?)"$/g, '$1');
-          arr[key] = value;
-        }
-
-        return arr;
+        return newElement;
       },
 
       _createValueChangeListener: function(propertyName, propertyToBindTo) {
