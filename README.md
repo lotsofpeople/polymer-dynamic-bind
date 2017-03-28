@@ -40,4 +40,3 @@ Your application is already set up to be tested via [web-component-tester](https
 ## Known Issues
 
 - When using shady-dom, `value-changed` events don't fire in dynamically added elements. Is this normal behavior?
-- Event binding not implemented yet

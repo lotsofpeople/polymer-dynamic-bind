@@ -63,6 +63,7 @@
       insertHTML: function(html) {
         var element = this._initElement(html);
         this.$.container.appendChild(element);
+        return element;
       },
 
       _initElement: function(html) {
@@ -78,8 +79,6 @@
         var newElement = document.createElement(el.nodeName);
 
         for(var i in elementAttributes) {
-
-
           var attributeName = elementAttributes[i].nodeName;
           var attributeValue = elementAttributes[i].value;
           var isOneWayBinding = attributeValue.match(oneWayBindingPattern);
@@ -100,7 +99,14 @@
 
             var isEvent = (attributeName.substr(0, 3) === 'on-');
 
-            if(!isEvent) {
+            if(isEvent) {
+              var eventName = attributeName.substr(3);
+              newElement.addEventListener(eventName, function(evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                evt.stopImmediatePropagation();
+              })
+            } else {
               newElement[this._camelCase(attributeName)] = attributeValue;
             }
 

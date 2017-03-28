@@ -53,8 +53,8 @@
       <dynamic-bind
         id="dynamicBind"
         props="{{props}}"
-        on-my-event="handleMyEvent"
       ></dynamic-bind>
+
     </template>
 
     <script>
@@ -65,12 +65,11 @@
       }
       demo.addHTML = function() {
         dynamicBind.importHref(this.resolveUrl('element-two.html'));
-        dynamicBind.insertHTML('<element-two full-name="{{fullName}}" first-name="[[firstName]]" last-name="{{lastName}}"></element-two>');
-        dynamicBind.updateStyles();
+        var addedElement = dynamicBind.insertHTML('<element-two full-name="{{fullName}}" first-name="[[firstName]]" last-name="{{lastName}}"></element-two>');
+        addedElement.addEventListener('my-event', demo.handleEvent)
       }
-
-      demo.handleMyEvent = function() {
-        alert('handleMyEvent!')
+      demo.handleEvent = function() {
+        alert('my-event fired!');
       }
     </script>
   </demo-snippet>
