@@ -29,6 +29,8 @@
     </label>
     <br>
 
+    <button on-tap="_fireMyEvent">fire event</button>
+
   </template>
 
   <script>
@@ -73,6 +75,10 @@
 
       _fullNameChanged: function(fullName) {
         this.fire('full-name-changed', fullName); //shady-dom fix
+      },
+
+      _fireMyEvent: function() {
+        this.fire('my-event');
       }
 
     });

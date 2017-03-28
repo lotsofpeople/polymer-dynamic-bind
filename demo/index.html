@@ -50,7 +50,11 @@
 
       <button on-tap="addHTML">Add Element</button>
 
-      <dynamic-bind id="dynamicBind" props="{{props}}"></dynamic-bind>
+      <dynamic-bind
+        id="dynamicBind"
+        props="{{props}}"
+        on-my-event="handleMyEvent"
+      ></dynamic-bind>
     </template>
 
     <script>
@@ -63,6 +67,10 @@
         dynamicBind.importHref(this.resolveUrl('element-two.html'));
         dynamicBind.insertHTML('<element-two full-name="{{fullName}}" first-name="[[firstName]]" last-name="{{lastName}}"></element-two>');
         dynamicBind.updateStyles();
+      }
+
+      demo.handleMyEvent = function() {
+        alert('handleMyEvent!')
       }
     </script>
   </demo-snippet>

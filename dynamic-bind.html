@@ -18,7 +18,7 @@
       }
 
       #container > * {
-        @apply --dynamic-bind-container;
+        @apply --dynamic-bind-item;
       }
     </style>
 
@@ -78,6 +78,8 @@
         var newElement = document.createElement(el.nodeName);
 
         for(var i in elementAttributes) {
+
+
           var attributeName = elementAttributes[i].nodeName;
           var attributeValue = elementAttributes[i].value;
           var isOneWayBinding = attributeValue.match(oneWayBindingPattern);
@@ -95,7 +97,13 @@
           }
 
           else {
-            newElement[this._camelCase(attributeName)] = attributeValue;
+
+            var isEvent = (attributeName.substr(0, 3) === 'on-');
+
+            if(!isEvent) {
+              newElement[this._camelCase(attributeName)] = attributeValue;
+            }
+
           }
 
         }
