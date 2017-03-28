@@ -43,38 +43,23 @@
         firstName: {
           type: String,
           notify: true,
-          observer: '_firstNameChanged'
         },
 
         lastName: {
           type: String,
           notify: true,
-          observer: '_lastNameChanged'
         },
 
         fullName: {
           type: String,
           notify: true,
           computed: '_computeFullName(firstName, lastName)',
-          observer: '_fullNameChanged'
         }
         
       },
 
       _computeFullName: function(firstName, lastName) {
         return firstName + ' ' + lastName;
-      },
-
-      _firstNameChanged: function(firstName) {
-        this.fire('first-name-changed', firstName); //shady-dom fix
-      },
-
-      _lastNameChanged: function(lastName) {
-        this.fire('last-name-changed', lastName); //shady-dom fix
-      },
-
-      _fullNameChanged: function(fullName) {
-        this.fire('full-name-changed', fullName); //shady-dom fix
       },
 
       _fireMyEvent: function() {

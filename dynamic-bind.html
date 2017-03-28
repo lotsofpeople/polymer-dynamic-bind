@@ -57,6 +57,9 @@
           var propName = this._dash(propName);
           var boundProp = this._camelCase(elements[i]['data-bind-' + propName]);
           elements[i][boundProp] = value;
+          if(elements[i].hasAttribute(propName)) {
+            elements[i].setAttribute(propName, value);
+          }
         }
       },
 
@@ -79,35 +82,45 @@
         var newElement = document.createElement(el.nodeName);
 
         for(var i in elementAttributes) {
-          var attributeName = elementAttributes[i].nodeName;
-          var attributeValue = elementAttributes[i].value;
-          var isOneWayBinding = attributeValue.match(oneWayBindingPattern);
-          var isTwoWayBinding = attributeValue.match(twoWayBindingPattern);
+          var propertyName = elementAttributes[i].nodeName;
+          var isAttributeBinding = propertyName.substr(-1) === '$';
+
+          if(isAttributeBinding) {
+            propertyName = propertyName.substring(0, propertyName.length-1);
+          }
+
+          var propertyValue = elementAttributes[i].value;
+
+          var isOneWayBinding = propertyValue.match(oneWayBindingPattern);
+          var isTwoWayBinding = propertyValue.match(twoWayBindingPattern);
 
           if(isOneWayBinding || isTwoWayBinding) {
-            
-            var propertyToBindTo = attributeValue.substring(2, attributeValue.length-2);
-            newElement['data-bind-' + this._dash(propertyToBindTo)] = attributeName;
-            newElement[this._camelCase(attributeName)] = this.props[propertyToBindTo];
+            var propertyToBindTo = propertyValue.substring(2, propertyValue.length-2);
+            newElement['data-bind-' + this._dash(propertyToBindTo)] = propertyName;
+
+            newElement[this._camelCase(propertyName)] = this.props[propertyToBindTo];
+            if(isAttributeBinding) {
+              newElement.setAttribute(propertyName, this.props[propertyToBindTo]);
+            }
             
             if(isTwoWayBinding) {
-              this._createValueChangeListener(attributeName, propertyToBindTo);
+              this._createValueChangeListener(propertyName, propertyToBindTo);
             }
           }
 
           else {
 
-            var isEvent = (attributeName.substr(0, 3) === 'on-');
+            var isEvent = (propertyName.substr(0, 3) === 'on-');
 
             if(isEvent) {
-              var eventName = attributeName.substr(3);
+              var eventName = propertyName.substr(3);
               newElement.addEventListener(eventName, function(evt) {
                 evt.preventDefault();
                 evt.stopPropagation();
                 evt.stopImmediatePropagation();
               })
             } else {
-              newElement[this._camelCase(attributeName)] = attributeValue;
+              newElement[this._camelCase(propertyName)] = propertyValue;
             }
 
           }

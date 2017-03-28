@@ -65,7 +65,7 @@
       }
       demo.addHTML = function() {
         dynamicBind.importHref(this.resolveUrl('element-two.html'));
-        var addedElement = dynamicBind.insertHTML('<element-two full-name="{{fullName}}" first-name="[[firstName]]" last-name="{{lastName}}"></element-two>');
+        var addedElement = dynamicBind.insertHTML('<element-two full-name$="{{fullName}}" first-name="{{firstName}}" last-name="{{lastName}}"></element-two>');
         addedElement.addEventListener('my-event', demo.handleEvent)
       }
       demo.handleEvent = function() {
