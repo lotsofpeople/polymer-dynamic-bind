@@ -138,11 +138,11 @@
       },
 
       _camelCase: function(str) {
-        return str.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+        if(str) return str.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
       },
 
       _dash: function(str) {
-        return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+        if(str) return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
       }
 
     });
