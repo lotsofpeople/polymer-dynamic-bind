@@ -45,6 +45,16 @@
         '_propsChanged(props.*)'
       ],
 
+      reset: function() {
+        this.$.container.innerHTML = '';
+      },
+
+      insertHTML: function(html) {
+        var element = this._initElement(html);
+        this.$.container.appendChild(element);
+        return element;
+      },
+
       _propsChanged: function(change) {
         var key = change.path.split('.')[1];
         if(!key) return;
@@ -61,12 +71,6 @@
             elements[i].setAttribute(propName, value);
           }
         }
-      },
-
-      insertHTML: function(html) {
-        var element = this._initElement(html);
-        this.$.container.appendChild(element);
-        return element;
       },
 
       _initElement: function(html) {
