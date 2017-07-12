@@ -17,7 +17,8 @@
         @apply --dynamic-bind-container;
       }
 
-      #container > * {
+      #container > *,
+      #container > ::slotted(*) {
         @apply --dynamic-bind-item;
       }
     </style>
